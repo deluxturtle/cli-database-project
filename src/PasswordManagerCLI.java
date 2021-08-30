@@ -1,68 +1,104 @@
 import java.util.Scanner;
 
-//Main Project Class
-//Login
-//Menu System
+/*
+ * Displays command line menus for operating on our database program
+ * Modeled after the SER334 Module 2 Project.
+ */
 public class PasswordManagerCLI {
 	
 	Scanner in;
 	
-	public void Start() {
+	public void start() {
 		in = new Scanner(System.in);
-		LoginMenu();
+		loginMenu();
 		
 		//Shows up if a function just exits 
 		System.out.println("Exited Unexpectedly.");
 	}
 	
-	void LoginMenu() {
+	void loginMenu() {
 		System.out.print("Login:\nusername: ");
 		
 		String input = in.nextLine();
 		
-		if(LoginAs(input)) {
-			MainMenu();
+		if(loginAs(input)) {
+			mainMenu();
 		}
 		
 		
 	}
 	
 	
-	void MainMenu() {
-		System.out.println();
-		System.out.println("Main Menu");
-		System.out.println(
-				  "1. Records\n"
-				+ "2. Manage Password\n"
-				+ "3. Logout");
-		String input = in.nextLine();
-		int inputNum = Integer.parseInt(input);
-		
-		switch(inputNum) {
-			case 1: RecordsMenu();
+	void mainMenu() {
+		do {
+			System.out.println(
+					  "\n-----------------------------------\n"
+					+ "Main Menu"
+					+ "\n-----------------------------------\n");
+			System.out.println(
+					  "1. Records\n"
+					+ "2. Manage Password\n"
+					+ "3. Logout");
+			String input = in.nextLine();
+			int inputNum = Integer.parseInt(input);
+			mainMenuBranch(inputNum);
+
+		}while(true);
+	}
+	
+	/*
+	 * Handles menu options of the main menu
+	 */
+	void mainMenuBranch(int option) {
+		switch(option) {
+			case 1: recordsMenu();
 				break;
-			case 2: ManagePasswordMenu();
+			case 2: managesPasswordMenu();
 				break;
-			case 3: LogoutMenu();
+			case 3: logoutMenu();
 				break;
-			default : System.out.println("Invalid Option\n");
-				MainMenu();
+			default : System.out.println("Invalid Option try again...");
 				break;
 		}
 	}
 	
-	//Displays Menu for editing or showing menus
-	void RecordsMenu() {
-		
+	/*
+	 * Displays Menu for editing or showing menus
+	 */
+	void recordsMenu() {
+		int input_num;
+		do {
+			System.out.println(
+					"\n-----------------------------------\n"
+					+ "Records Menu"
+					+ "\n-----------------------------------\n"
+					+ "-1 RETURN TO PREVIOUS MENU\n"
+					+ "-2 TERMINATE PROGRAM\n"
+					+ "Please enter your choice ---> ");
+			input_num = Integer.parseInt(in.nextLine());
+			recordsMenuBranch(input_num);
+			
+		}while(true);
+	}
+	
+	void recordsMenuBranch(int option) {
+		if(option == -1) {
+			System.out.println("Returning...");
+			
+		}
+		else if( option == -2) {
+			System.out.println("Terminating program...");
+			exit();
+		}
 	}
 	
 	//Displays Menu for managing master password.
-	void ManagePasswordMenu() {
+	void managesPasswordMenu() {
 		
 	}
 	
 	//Displays Menu for logging out. (Asking if you want to log out.
-	void LogoutMenu() {
+	void logoutMenu() {
 		System.out.println("Are you sure? (yes/no)");
 		String input = in.nextLine();
 		if(input == "yes") {
@@ -72,18 +108,19 @@ public class PasswordManagerCLI {
 			
 		}
 		else {
-			LogoutMenu();
+			logoutMenu();
 		}
 	}
 	
 	//Takes input as username
-	boolean LoginAs(String username) {
+	boolean loginAs(String username) {
 		//TODO Implement login system.
 		System.out.println("Logging in as " + username);
 		return true;
 	}
 	
-	void Exit() {
+	void exit() {
 		System.out.println("Goodbye!");
+		System.exit(0);
 	}
 }
