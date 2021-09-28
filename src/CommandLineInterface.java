@@ -22,7 +22,7 @@ public class CommandLineInterface {
 	
 	void welcomeMenu() {
 		System.out.println("Welcome to your Password Manager.");
-		
+		System.out.println("Login or Create new user?");
 	}
 	
 	void loginMenu() {
