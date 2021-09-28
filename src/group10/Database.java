@@ -1,3 +1,5 @@
+package group10;
+
 
 
 import java.sql.Connection;
@@ -31,6 +33,7 @@ public class Database {
 			}
 		}
 		catch(SQLException ex) {
+			System.out.println("Unable to connect to " + url);
 			ex.printStackTrace();
 		}
 		finally {

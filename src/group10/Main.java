@@ -1,3 +1,5 @@
+package group10;
+
 
 import java.util.Scanner;
 
@@ -9,6 +11,7 @@ public class Main {
 		
 		//read from config
 		Config config = new Config(configFile);
+		
 		
 		//Connect to database
 		Database database = new Database(config.url, config.user, config.password);

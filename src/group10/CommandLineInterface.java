@@ -1,3 +1,5 @@
+package group10;
+
 import java.util.Scanner;
 
 /*
