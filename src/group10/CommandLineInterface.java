@@ -10,6 +10,7 @@ public class CommandLineInterface {
 	
 	Database database;
 	Scanner in;
+	boolean exit = false;
 	
 	/**
 	 * Begins menus for command line interface
@@ -20,22 +21,13 @@ public class CommandLineInterface {
 		
 		in = new Scanner(System.in);
 		
+		mainMenu();
 		
 		//Shows up if a function just exits
 		System.out.println("CLI Exited.");
 	}
 	
-	void loginMenu() {
-		System.out.print("Login:\nusername: ");
-		
-		String input = in.nextLine();
-		
-		if(loginAs(input)) {
-			mainMenu();
-		}
-		
-		
-	}
+
 	
 	
 	void mainMenu() {
@@ -47,12 +39,12 @@ public class CommandLineInterface {
 			System.out.println(
 					  "1. Records\n"
 					+ "2. Manage Password\n"
-					+ "3. Logout");
+					+ "3. Exit");
 			String input = in.nextLine();
 			int inputNum = Integer.parseInt(input);
 			mainMenuBranch(inputNum);
 
-		}while(true);
+		}while(!exit);
 	}
 	
 	/*
@@ -64,7 +56,7 @@ public class CommandLineInterface {
 				break;
 			case 2: managesPasswordMenu();
 				break;
-			case 3: logoutMenu();
+			case 3: exit();
 				break;
 			default : System.out.println("Invalid Option try again...");
 				break;
@@ -87,13 +79,13 @@ public class CommandLineInterface {
 			input_num = Integer.parseInt(in.nextLine());
 			recordsMenuBranch(input_num);
 			
-		}while(true);
+		}while(!exit);
 	}
 	
 	void recordsMenuBranch(int option) {
 		if(option == -1) {
 			System.out.println("Returning...");
-			
+			mainMenu();
 		}
 		else if( option == -2) {
 			System.out.println("Terminating program...");
@@ -130,6 +122,20 @@ public class CommandLineInterface {
 	
 	void exit() {
 		System.out.println("Goodbye!");
-		System.exit(0);
+		exit = true;
+		//let program exit out to main to close all resources.
 	}
+	
+//	void loginMenu() {
+//	System.out.print("Login:\nusername: ");
+//	
+//	String input = in.nextLine();
+//	
+//	if(loginAs(input)) {
+//		mainMenu();
+//	}
+//	
+//	
+//}
+	
 }
