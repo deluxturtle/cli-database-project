@@ -74,6 +74,7 @@ public class Config {
 		try {
 			FileWriter writer = new FileWriter(fileName);
 			writer.write(USER + "=username\n" + PASSWORD + "=password\n" + URL + "=url\n");
+			writer.close();
 			System.out.println("Use command line arguments <url> <user> <password> or use config file in current directory.");
 		} catch(IOException e) {
 			System.out.println("Error writing config file.");
