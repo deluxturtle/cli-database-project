@@ -6,19 +6,21 @@ import java.util.Scanner;
  */
 public class CommandLineInterface {
 	
+	Database database;
 	Scanner in;
 	
-	public void start() {
-		in = new Scanner(System.in);
-		//disabled login to go into just adding to the db
-		//loginMenu();
+	public void start(Database database) {
+		this.database = database;
 		
-		//Shows up if a function just exits 
-		System.out.println("Exited Unexpectedly.");
+		in = new Scanner(System.in);
+		
+		//Shows up if a function just exits
+		System.out.println("CLI Exited.");
 	}
 	
 	void welcomeMenu() {
-		System.out.print("Welcome to");
+		System.out.println("Welcome to your Password Manager.");
+		
 	}
 	
 	void loginMenu() {
