@@ -4,16 +4,21 @@ import java.util.Scanner;
  * Displays command line menus for operating on our database program
  * Modeled after the SER334 Module 2 Project.
  */
-public class PasswordManagerCLI {
+public class CommandLineInterface {
 	
 	Scanner in;
 	
 	public void start() {
 		in = new Scanner(System.in);
-		loginMenu();
+		//disabled login to go into just adding to the db
+		//loginMenu();
 		
 		//Shows up if a function just exits 
 		System.out.println("Exited Unexpectedly.");
+	}
+	
+	void welcomeMenu() {
+		System.out.print("Welcome to");
 	}
 	
 	void loginMenu() {
