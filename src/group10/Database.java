@@ -11,20 +11,16 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.sql.SQLException;
 
+/**
+ * Holds database functions for connecting
+ * @author group10
+ *
+ */
 public class Database {
 	
-	String url;
-	String user;
-	String password;
-	
-	ResultSet rs = null;
-	Statement stmt = null;
 	Connection conn = null;
 	
-	public Database(String url, String user, String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;		
+	public void connect(String url, String user, String password) {
 		
 		try {
 			conn = DriverManager.getConnection(url, user, password);
@@ -43,8 +39,20 @@ public class Database {
 				}
 			}
 			catch(SQLException se) {
+				System.out.println("Problem closing connection!");
 				se.printStackTrace();
 			}
+		}
+	}
+	
+	public void closeResources() {
+		try {
+			if(conn != null) {
+				conn.close();
+			}				
+		} catch(SQLException se) {
+			se.printStackTrace();
+			System.out.println("Not all DB resources freed!");
 		}
 	}
 	
