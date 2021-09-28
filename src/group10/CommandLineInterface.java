@@ -16,15 +16,9 @@ public class CommandLineInterface {
 		
 		in = new Scanner(System.in);
 		
-		welcomeMenu();
 		
 		//Shows up if a function just exits
 		System.out.println("CLI Exited.");
-	}
-	
-	void welcomeMenu() {
-		System.out.println("Welcome to your Password Manager.");
-		System.out.println("Login or Create new user?");
 	}
 	
 	void loginMenu() {
