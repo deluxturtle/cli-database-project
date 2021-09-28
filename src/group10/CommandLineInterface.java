@@ -11,6 +11,10 @@ public class CommandLineInterface {
 	Database database;
 	Scanner in;
 	
+	/**
+	 * Begins menus for command line interface
+	 * @param database
+	 */
 	public void start(Database database) {
 		this.database = database;
 		

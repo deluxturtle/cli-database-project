@@ -26,11 +26,13 @@ public class Main {
 			//read from config
 			Config config = new Config(configFile);
 			//Connect to database
-			database.connect(config.url, config.user, config.password);
+			if(config.url != null)
+				database.connect(config.url, config.user, config.password);
+			else
+				System.exit(0);
 		}
 		
-
-		
+		//start doing the command line interface menus
 		CommandLineInterface pwmanager = new CommandLineInterface();
 		pwmanager.start(database);
 		
