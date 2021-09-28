@@ -14,6 +14,8 @@ public class CommandLineInterface {
 		
 		in = new Scanner(System.in);
 		
+		welcomeMenu();
+		
 		//Shows up if a function just exits
 		System.out.println("CLI Exited.");
 	}
