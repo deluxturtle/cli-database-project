@@ -36,7 +36,6 @@ public class Main {
 		CommandLineInterface pwmanager = new CommandLineInterface();
 		pwmanager.start(database);
 		
-		database.closeResources();
 		
 	}
 
