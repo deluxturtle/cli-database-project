@@ -17,11 +17,17 @@ import java.sql.SQLException;
  *
  */
 public class Database {
-	
-	Connection conn = null;
+
+	String url;
+	String user;
+	String password;
 	
 	public void connect(String url, String user, String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
 		
+		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(url, user, password);
 			if(conn != null) {
@@ -45,15 +51,55 @@ public class Database {
 		}
 	}
 	
-	public void closeResources() {
+	/**
+	 * 
+	 * @param loginUsername
+	 * @param loginPassword
+	 * @return true if found login 
+	 */
+	public boolean login(String loginUsername, String loginPassword) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
 		try {
-			if(conn != null) {
-				conn.close();
-			}				
-		} catch(SQLException se) {
-			se.printStackTrace();
-			System.out.println("Not all DB resources freed!");
+			conn = DriverManager.getConnection(url, user, password);
+			ps = conn.prepareStatement(
+					"SELECT username, master_password \n" +
+					"FROM user u \n" +
+					"WHERE u.username = ? AND u.master_password = ?");
+			ps.setString(1, loginUsername);
+			ps.setString(2, loginPassword);
+			rs = ps.executeQuery();
+			
+			//If we got a match return true!
+			if(rs.next()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
 		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(ps != null)
+					ps.close();
+				if(conn != null) 
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Problem closing database resources.");
+				e.printStackTrace();
+			}
+		}
+		
+		
 	}
 	
 	
