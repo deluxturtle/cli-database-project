@@ -223,16 +223,4 @@ public class CommandLineInterface {
 		}
 	}
 	
-//	void loginMenu() {
-//	System.out.print("Login:\nusername: ");
-//	
-//	String input = in.nextLine();
-//	
-//	if(loginAs(input)) {
-//		mainMenu();
-//	}
-//	
-//	
-//}
-	
 }
