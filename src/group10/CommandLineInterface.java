@@ -78,8 +78,10 @@ public class CommandLineInterface {
 			+ "Users"
 			+ "\n-----------------------------------\n");
 		//grab a list of users
-		List<String> users;
-		
+		List<String> users = database.getUserList();
+		for(String user : users) {
+			System.out.println(user);
+		}
 	}
 	
 	/**
