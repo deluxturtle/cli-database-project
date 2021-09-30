@@ -1,5 +1,6 @@
 package group10;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -36,13 +37,14 @@ public class CommandLineInterface {
 	void welcomeMenu() {
 		do {
 			System.out.println(
-					  "\n-----------------------------------\n"
-					+ "Password Manager"
-					+ "\n-----------------------------------\n");
+				  "\n-----------------------------------\n"
+				+ "Password Manager"
+				+ "\n-----------------------------------\n");
 			System.out.println(
-					  "1. Login\n"
-					+ "2. New Account\n"
-					+ "3. Exit");
+				  "1. Login\n"
+				+ "2. New Account\n"
+			    + "3. Display Users\n"
+				+ "4. Exit");
 			
 			String input = in.nextLine();
 			int inputNum = Integer.parseInt(input);
@@ -61,11 +63,23 @@ public class CommandLineInterface {
 				break;
 			case 2: newAccountMenu();
 				break;
-			case 3: exit();
+			case 3: displayUserMenu();
+				break;
+			case 4: exit();
 				break;
 			default : System.out.println("Invalid Option try again...");
 				break;
 		}
+	}
+	
+	void displayUserMenu() {
+		System.out.println(
+			  "\n-----------------------------------\n"
+			+ "Users"
+			+ "\n-----------------------------------\n");
+		//grab a list of users
+		List<String> users;
+		
 	}
 	
 	/**
@@ -106,13 +120,13 @@ public class CommandLineInterface {
 	void mainMenu() {
 		do {
 			System.out.println(
-					  "\n-----------------------------------\n"
-					+ "Main Menu"
-					+ "\n-----------------------------------\n");
+				  "\n-----------------------------------\n"
+				+ "Main Menu"
+				+ "\n-----------------------------------\n");
 			System.out.println(
-					  "1. Records\n"
-					+ "2. Manage Password\n"
-					+ "3. Exit");
+				  "1. Records\n"
+				+ "2. Manage Password\n"
+				+ "3. Exit");
 			String input = in.nextLine();
 			int inputNum = Integer.parseInt(input);
 			mainMenuBranch(inputNum);
@@ -143,12 +157,12 @@ public class CommandLineInterface {
 		int input_num;
 		do {
 			System.out.println(
-					"\n-----------------------------------\n"
-					+ "Records Menu"
-					+ "\n-----------------------------------\n"
-					+ "-1 RETURN TO PREVIOUS MENU\n"
-					+ "-2 TERMINATE PROGRAM\n"
-					+ "Please enter your choice ---> ");
+				"\n-----------------------------------\n"
+				+ "Records Menu"
+				+ "\n-----------------------------------\n"
+				+ "-1 RETURN TO PREVIOUS MENU\n"
+				+ "-2 TERMINATE PROGRAM\n"
+				+ "Please enter your choice ---> ");
 			input_num = Integer.parseInt(in.nextLine());
 			recordsMenuBranch(input_num);
 			

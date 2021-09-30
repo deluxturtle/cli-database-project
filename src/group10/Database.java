@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.SQLException;
 
 /**
@@ -133,5 +135,44 @@ public class Database {
 		
 	}
 	
+	/**
+	 * Retrieves all users and returns a list of user names as Strings.
+	 * @return user names
+	 */
+	public List<String> getUserList(){
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		List<String> users = new ArrayList<String>();
+		
+		try {
+			conn = DriverManager.getConnection(url, user, password);
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM user");
+		    while(rs.next()) {
+		    	users.add(rs.getString(1));
+		    }
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return users;
+	}
 	
 }
