@@ -51,6 +51,37 @@ public class Database {
 		}
 	}
 	
+	public boolean attemptConnection(String url, String user, String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
+		
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection(url, user, password);
+			if(conn != null) {
+				System.out.println("Successfully Connected to " + url + "!");
+				return true;
+			}
+		}
+		catch(SQLException ex) {
+			System.out.println("Unable to connect to " + url);
+			return false;
+		}
+		finally {
+			try {
+				if(conn != null) {
+					conn.close();
+				}
+			}
+			catch(SQLException se) {
+				System.out.println("Problem closing connection!");
+				se.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * 
 	 * @param loginUsername

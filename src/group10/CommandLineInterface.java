@@ -85,7 +85,8 @@ public class CommandLineInterface {
 		System.out.print("password:");
 		password = in.nextLine();
 		
-		if(database.login(username, password)){
+		//as long as the user has entered something try to login.
+		if(!username.isBlank() && !password.isBlank() && database.login(username, password)){
 			System.out.println("SUCCESS");
 			delay(1);
 			mainMenu();
