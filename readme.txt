@@ -1,10 +1,8 @@
 
 
-
-
-
-
-
+USAGEL: java -jar password_manager.jar <url> <user> <password>
+OR: 	java -jar password_manager.jar
+#this will create a config file that you can fill out with url/user/password.
 
 
 
