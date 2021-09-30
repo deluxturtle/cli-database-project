@@ -7,35 +7,48 @@ import java.util.Scanner;
 
 public class Main {
 	
-	static String configFile = "config.properties";
+	static String configFilePath = "config.properties";
 	
 	public static void main(String args[]) {
 		
-		Database database = new Database();
+		String url = null;
+		String user = null;
+		String password = null;
 		
-		if(args.length > 0) {
-			if(args.length < 3) {
-				System.out.println("USAGE: <url> <user> <password>");
-				System.exit(0);
-			}
-			else {
-				database.connect(args[0], args[1], args[2]);
-			}
+		if(args.length == 3) {
+			url = args[0];
+			user = args[1];
+			password = args[2];			
 		}
 		else {
-			//read from config
-			Config config = new Config(configFile);
-			//Connect to database
-			if(config.url != null)
-				database.connect(config.url, config.user, config.password);
-			else
+			//optional use of config file
+			Config config = new Config();
+			if(config.readConfig(configFilePath)) {
+				url = config.url;
+				user = config.user;
+				password = config.password;
+			}
+			else {
+				config.createEmptyConfig(configFilePath);
+				System.out.println("Created optional config file.");
+				System.out.println("USAGE: java -jar password_manager.jar <url> <user> <password>");
+				System.out.println("Or use optional config file.");
 				System.exit(0);
+			}
 		}
 		
-		//start doing the command line interface menus
-		CommandLineInterface pwmanager = new CommandLineInterface();
-		pwmanager.start(database);
+		Database database = new Database();
 		
+		if(database.attemptConnection(url, user, password)) {
+			//start doing the command line interface menus
+			CommandLineInterface pwmanager = new CommandLineInterface();
+			pwmanager.start(database);			
+		}
+		else {
+			System.out.println("Unable to connect to given database in given arguments.");
+			System.out.println("USAGE: java -jar password_manager.jar <url> <user> <password>");
+			System.out.println("Or use optional config file.");
+		}
 		
 	}
 
