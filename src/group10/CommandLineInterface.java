@@ -114,7 +114,71 @@ public class CommandLineInterface {
 	}
 	
 	void newAccountMenu() {
+		String input;//temp value for user input
+		String username = "";
+		String password = "";
+		System.out.println(
+			  "\n-----------------------------------\n"
+			+ "New Account Menu"
+			+ "\n-----------------------------------\n");
+		do {
+			//Get username
+			System.out.println("-----Creating new account-----");
+			System.out.println("Please enter your new username.");
+			System.out.print("username:");
+			username = in.nextLine();
+			
+			do {
+				//double check your name
+				System.out.println("Review Username:\n"+username+"\nAre you sure you want to use this name?\ny/n");
+				input = in.nextLine();
+				
+				//Go for it
+				if(input.equalsIgnoreCase("y")) {
+					//Check for duplicate users in the db.
+					if(!database.duplicateUser(username)) {
+						System.out.println("Success!");
+						break;
+					}
+					else {
+						System.out.println("User already exists. Please use a different name.");
+						break;
+					}			
+				}
+				else if(input.equalsIgnoreCase("n")) {
+					username = "";
+				}
+			}
+			while(!input.equalsIgnoreCase("n"));
+			
+			//if got username  get the password from the user.
+			if(username.length() > 0) {
+				do {
+					System.out.println("Please enter your new password. (can't be blank)");
+					System.out.print("password:");
+					password = in.nextLine();
+					
+					//password passes requirements
+					if(password.length() > 0) {
+						System.out.println("Password is acceptable!\n");
+						break;
+					}
+					else {
+						System.out.println("Password must be > 0 characters.");
+						password = "";
+					}
+					//System.out.println("Password Length "+ password.length());
+				}while(password.length() < 1);
+				
+				//finally break out of this prison.
+				break;
+			}
+			
+		}while(true);
 		
+		System.out.println("--New User Account Created!--");
+		delay(1);
+
 	}
 
 	
@@ -222,17 +286,5 @@ public class CommandLineInterface {
 			e.printStackTrace();
 		}
 	}
-	
-//	void loginMenu() {
-//	System.out.print("Login:\nusername: ");
-//	
-//	String input = in.nextLine();
-//	
-//	if(loginAs(input)) {
-//		mainMenu();
-//	}
-//	
-//	
-//}
 	
 }

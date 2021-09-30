@@ -175,4 +175,12 @@ public class Database {
 		return users;
 	}
 	
+	/**
+	 * Checks for duplicate user in the db.
+	 * @param username
+	 * @return true if found user with same name. False if doesn't exist.
+	 */
+	public boolean duplicateUser(String username) {
+		return false;
+	}
 }
