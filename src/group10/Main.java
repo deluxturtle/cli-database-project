@@ -15,6 +15,7 @@ public class Main {
 		String user = null;
 		String password = null;
 		
+		//Get arguments for database connection.
 		if(args.length == 3) {
 			url = args[0];
 			user = args[1];
@@ -36,6 +37,7 @@ public class Main {
 				System.exit(0);
 			}
 		}
+		
 		
 		Database database = new Database();
 		
