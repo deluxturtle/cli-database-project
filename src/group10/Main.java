@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Main {
 	
 	static String configFilePath = "config.properties";
+	static boolean exit = false;
 	
 	public static void main(String args[]) {
 		
@@ -39,12 +40,22 @@ public class Main {
 		}
 		
 		
-		Database database = new Database();
+		//Database database = new Database();
 		
-		if(database.attemptConnection(url, user, password)) {
+		if(Database.attemptConnection(url, user, password)) {
 			//start doing the command line interface menus
-			CommandLineInterface pwmanager = new CommandLineInterface();
-			pwmanager.start(database);			
+			Account accountLoginMenu = new Account();
+			do {
+				accountLoginMenu.mainMenu();
+				while(Account.loggedin) {
+					//OTHER MENUS
+					//CARDS
+					//NOTES
+					//LOGINS
+					
+				}		
+			}while(!exit);
+
 		}
 		else {
 			System.out.println("Unable to connect to given database in given arguments.");
@@ -52,6 +63,10 @@ public class Main {
 			System.out.println("Or use optional config file.");
 		}
 		
+	}
+	
+	public static void exitProgram() {
+		exit = true;
 	}
 
 }

@@ -20,14 +20,14 @@ import java.sql.SQLException;
  */
 public class Database {
 
-	String url;
-	String user;
-	String password;
+	static String url;
+	static String user;
+	static String password;
 	
-	public void connect(String url, String user, String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
+	public static void connect(String pUrl, String pUser, String pPassword) {
+		url = pUrl;
+		user = pUser;
+		password = pPassword;
 		
 		Connection conn = null;
 		try {
@@ -53,10 +53,10 @@ public class Database {
 		}
 	}
 	
-	public boolean attemptConnection(String url, String user, String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
+	public static boolean attemptConnection(String pUrl, String pUser, String pPassword) {
+		url = pUrl;
+		user = pUser;
+		password = pPassword;
 		
 		Connection conn = null;
 		try {
@@ -90,7 +90,7 @@ public class Database {
 	 * @param loginPassword
 	 * @return true if found login 
 	 */
-	public boolean login(String loginUsername, String loginPassword) {
+	public static boolean login(String loginUsername, String loginPassword) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -139,7 +139,7 @@ public class Database {
 	 * Retrieves all users and returns a list of user names as Strings.
 	 * @return user names
 	 */
-	public List<String> getUserList(){
+	public static List<String> getUserList(){
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -180,7 +180,7 @@ public class Database {
 	 * @param username
 	 * @return true if found user with same name. False if doesn't exist.
 	 */
-	public boolean duplicateUser(String username) {
+	public static boolean duplicateUser(String username) {
 		return false;
 	}
 }
