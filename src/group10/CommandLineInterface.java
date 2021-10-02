@@ -7,6 +7,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Displays command line menus for operating on our database program
  * Modeled after the SER334 Module 2 Project.
+ * 
+ * This class got to big implementing all of the functionality so it is now
+ * broken into different menus. I left it in to get examples on how to
+ * implement menus.
  * @author aseba, 
  *
  */
@@ -29,11 +33,6 @@ public class CommandLineInterface {
 //	}
 
 	
-
-	
-	
-
-	
 	
 //	void mainMenu() {
 //		do {
@@ -51,7 +50,8 @@ public class CommandLineInterface {
 //
 //		}while(!exit);
 //	}
-//	
+
+	
 //	/*
 //	 * Handles menu options of the main menu
 //	 */
@@ -67,7 +67,9 @@ public class CommandLineInterface {
 //				break;
 //		}
 //	}
-//	
+
+	
+	
 //	/*
 //	 * Displays Menu for editing or showing menus
 //	 */
@@ -86,7 +88,10 @@ public class CommandLineInterface {
 //			
 //		}while(!exit);
 //	}
-//	
+
+	
+	
+	
 //	void recordsMenuBranch(int option) {
 //		if(option == -1) {
 //			System.out.println("Returning...");
