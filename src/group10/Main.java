@@ -10,7 +10,10 @@ public class Main {
 	static String configFilePath = "config.properties";
 	static boolean exit = false;
 	
+	
 	public static void main(String args[]) {
+		
+		Scanner in = new Scanner(System.in);
 		
 		String url = null;
 		String user = null;
@@ -48,10 +51,19 @@ public class Main {
 			do {
 				accountLoginMenu.mainMenu();
 				while(Account.loggedin) {
-					//OTHER MENUS
-					//CARDS
-					//NOTES
-					//LOGINS
+					System.out.println(
+							  "\n-----------------------------------\n"
+							+ "Main Menu"
+							+ "\n-----------------------------------\n");
+					System.out.println(
+						  "1. Cards\n"
+						+ "2. Notes\n"
+						+ "3. Logins\n"
+						+ "4. Manage Account\n"
+						+ "5. Log Out\n");
+					String input = in.nextLine();
+					int inputNum = Integer.parseInt(input);
+					mainMenuBranch(inputNum);
 					
 				}		
 			}while(!exit);
@@ -63,6 +75,27 @@ public class Main {
 			System.out.println("Or use optional config file.");
 		}
 		
+	}
+	
+	/*
+	 * Handles menu options of the main menu
+	 */
+	static void mainMenuBranch(int option) {
+		switch(option) {
+			case 1: //CARDS
+				break;
+			case 2: //NOTES
+				break;
+			case 3: //LOGINS
+				break;
+			case 4://Manage Account
+				break;
+			case 5: Account.logOut();
+				break;
+			//OTHER OPTIONS
+			default : System.out.println("Invalid Option try again...");
+				break;
+		}
 	}
 	
 	public static void exitProgram() {
