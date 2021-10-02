@@ -43,8 +43,7 @@ public class Main {
 		}
 		
 		
-		//Database database = new Database();
-		
+		//Tests database and continues if able to connect.
 		if(Database.attemptConnection(url, user, password)) {
 			//start doing the command line interface menus
 			Account accountLoginMenu = new Account();
