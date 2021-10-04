@@ -118,12 +118,13 @@ public class Account {
 				if(input.equalsIgnoreCase("y")) {
 					//Check for duplicate users in the db.
 					if(!Database.duplicateUser(username)) {
-						System.out.println("Success!");
+						//System.out.println("Success!");
 						break;
 					}
 					else {
 						System.out.println("User already exists. Please use a different name.");
-						break;
+						input = "n";
+						username = "";
 					}			
 				}
 				else if(input.equalsIgnoreCase("n")) {
@@ -151,13 +152,22 @@ public class Account {
 					//System.out.println("Password Length "+ password.length());
 				}while(password.length() < 1);
 				
+				//actually insert into db
+				if(Database.insertNewUser(username, password))
+				{
+					System.out.println("--New User Account Created!--");
+				}
+				else {
+					System.out.println("Problem creating new user account try again later.");
+				}
+				
 				//finally break out of this prison.
 				break;
 			}
 			
 		}while(true);
 		
-		System.out.println("--New User Account Created!--");
+		
 		delay(1);
 
 	}

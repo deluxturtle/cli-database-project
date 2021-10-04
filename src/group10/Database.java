@@ -19,25 +19,27 @@ import java.sql.SQLException;
  *
  */
 public class Database {
-
-	static String url;
-	static String user;
-	static String password;
+	
+	
+	//db for database to prevent confusion creating new users and passwords.
+	static String dbUrl;
+	static String dbUser;
+	static String dbPassword;
 	
 	public static void connect(String pUrl, String pUser, String pPassword) {
-		url = pUrl;
-		user = pUser;
-		password = pPassword;
+		dbUrl = pUrl;
+		dbUser = pUser;
+		dbPassword = pPassword;
 		
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			if(conn != null) {
-				System.out.println("Successfully Connected to " + url +"!");
+				System.out.println("Successfully Connected to " + dbUrl +"!");
 			}
 		}
 		catch(SQLException ex) {
-			System.out.println("Unable to connect to " + url);
+			System.out.println("Unable to connect to " + dbUrl);
 			ex.printStackTrace();
 		}
 		finally {
@@ -54,20 +56,20 @@ public class Database {
 	}
 	
 	public static boolean attemptConnection(String pUrl, String pUser, String pPassword) {
-		url = pUrl;
-		user = pUser;
-		password = pPassword;
+		dbUrl = pUrl;
+		dbUser = pUser;
+		dbPassword = pPassword;
 		
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			if(conn != null) {
-				System.out.println("Successfully Connected to " + url + "!");
+				System.out.println("Successfully Connected to " + dbUrl + "!");
 				return true;
 			}
 		}
 		catch(SQLException ex) {
-			System.out.println("Unable to connect to " + url);
+			System.out.println("Unable to connect to " + dbUrl);
 			return false;
 		}
 		finally {
@@ -96,7 +98,7 @@ public class Database {
 		ResultSet rs = null;
 		
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			ps = conn.prepareStatement(
 					"SELECT username, master_password \n" +
 					"FROM user u \n" +
@@ -147,7 +149,7 @@ public class Database {
 		List<String> users = new ArrayList<String>();
 		
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			stmt = conn.createStatement();
 			
 			rs = stmt.executeQuery("SELECT * FROM user");
@@ -181,6 +183,81 @@ public class Database {
 	 * @return true if found user with same name. False if doesn't exist.
 	 */
 	public static boolean duplicateUser(String username) {
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			
+			stmt = conn.prepareStatement("SELECT username FROM user WHERE user.username = ?");
+			stmt.setString(1, username);
+			rs = stmt.executeQuery();
+			
+			//Found the username... return true.
+			if(rs.next())
+				return true;
+			else {
+				return false;
+			}
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * Inserts new user into user table.
+	 * @param username
+	 * @param dbPassword
+	 */
+	public static boolean insertNewUser(String username, String newPassword) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			
+			ps = conn.prepareStatement("INSERT INTO `user` VALUES (?, ?)");
+			ps.setString(1, username);
+			ps.setString(2, newPassword);
+
+			if(ps.executeUpdate() > 0)
+				return true;
+			else
+				return false;
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
 		return false;
 	}
 }
