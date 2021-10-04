@@ -1,4 +1,5 @@
-
+1. Setup Database with sql scripts
+2. Run jar
 
 USAGEL: java -jar password_manager.jar <url> <user> <password>
 OR: 	java -jar password_manager.jar
