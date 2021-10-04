@@ -260,4 +260,42 @@ public class Database {
 		}
 		return false;
 	}
+	
+	/**
+	 * Deletes user from db.
+	 * @param username
+	 * @return
+	 */
+	public static boolean deleteUser(String username) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			
+			ps = conn.prepareStatement("DELETE FROM user WHERE username = ?");
+			ps.setString(1, username);
+
+			if(ps.executeUpdate() > 0)
+				return true;
+			else
+				return false;
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
+	}
 }

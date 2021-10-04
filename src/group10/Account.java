@@ -37,6 +37,8 @@ public class Account {
 			loginBranch(inputNum);
 			
 		}while(!exitMenu);
+		
+		
 	}
 	
 	void loginBranch(int option) {
@@ -56,6 +58,7 @@ public class Account {
 	
 	/**
 	 * Asks for username and password and sends the account credentials to check on the database.
+	 * sees if username and login are equivalent on the db.
 	 */
 	void accountMenu() {
 		String username = "";
@@ -178,6 +181,7 @@ public class Account {
 	void exit() {
 		System.out.println("Goodbye!");
 		exitMenu = true;
+		in.close();
 		Main.exitProgram();
 		//let program exit out to main to close all resources.
 	}

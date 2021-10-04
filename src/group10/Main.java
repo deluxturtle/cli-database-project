@@ -87,7 +87,7 @@ public class Main {
 				break;
 			case 3: //LOGINS
 				break;
-			case 4://Manage Account
+			case 4: ManageAccount.mainMenu();
 				break;
 			case 5: Account.logOut();
 				break;
