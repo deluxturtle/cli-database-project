@@ -37,6 +37,8 @@ public class Account {
 			loginBranch(inputNum);
 			
 		}while(!exitMenu);
+		
+		
 	}
 	
 	void loginBranch(int option) {
@@ -56,6 +58,7 @@ public class Account {
 	
 	/**
 	 * Asks for username and password and sends the account credentials to check on the database.
+	 * sees if username and login are equivalent on the db.
 	 */
 	void accountMenu() {
 		String username = "";
@@ -118,12 +121,13 @@ public class Account {
 				if(input.equalsIgnoreCase("y")) {
 					//Check for duplicate users in the db.
 					if(!Database.duplicateUser(username)) {
-						System.out.println("Success!");
+						//System.out.println("Success!");
 						break;
 					}
 					else {
 						System.out.println("User already exists. Please use a different name.");
-						break;
+						input = "n";
+						username = "";
 					}			
 				}
 				else if(input.equalsIgnoreCase("n")) {
@@ -151,13 +155,22 @@ public class Account {
 					//System.out.println("Password Length "+ password.length());
 				}while(password.length() < 1);
 				
+				//actually insert into db
+				if(Database.insertNewUser(username, password))
+				{
+					System.out.println("--New User Account Created!--");
+				}
+				else {
+					System.out.println("Problem creating new user account try again later.");
+				}
+				
 				//finally break out of this prison.
 				break;
 			}
 			
 		}while(true);
 		
-		System.out.println("--New User Account Created!--");
+		
 		delay(1);
 
 	}
@@ -168,6 +181,7 @@ public class Account {
 	void exit() {
 		System.out.println("Goodbye!");
 		exitMenu = true;
+		in.close();
 		Main.exitProgram();
 		//let program exit out to main to close all resources.
 	}
