@@ -87,7 +87,10 @@ public class Main {
 				break;
 			case 2: //NOTES
 				break;
-			case 3: LoginMenu.mainMenu();
+			case 3: //LoginMenu.mainMenu();
+				//testing instantiating the menu
+				LoginMenu loginMenu = new LoginMenu();
+				loginMenu.mainMenu();
 				break;
 			case 4: ManageAccount.mainMenu();
 				break;
