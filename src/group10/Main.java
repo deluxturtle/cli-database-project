@@ -9,11 +9,11 @@ public class Main {
 	
 	static String configFilePath = "config.properties";
 	static boolean exit = false;
-	
+	static Scanner in;
 	
 	public static void main(String args[]) {
+		in = new Scanner(System.in);
 		
-		Scanner in = new Scanner(System.in);
 		
 		String url = null;
 		String user = null;
@@ -74,6 +74,8 @@ public class Main {
 			System.out.println("Or use optional config file.");
 		}
 		
+		//close scanner
+		in.close();
 	}
 	
 	/*
