@@ -21,9 +21,9 @@ public class Main {
 		
 		//Get arguments for database connection.
 		if(args.length == 3) {
-			url = args[0];
-			user = args[1];
-			password = args[2];			
+			url = args[1];
+			user = args[2];
+			password = args[3];			
 		}
 		else {
 			//optional use of config file
