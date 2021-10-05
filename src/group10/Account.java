@@ -1,5 +1,12 @@
 package group10;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -11,17 +18,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class Account {
 	
-	
-	
-	Scanner in;
+	static String username = "";
 	boolean exitMenu = false;
 	static boolean loggedin = false;
 	
-	public Account() {
-		in = new Scanner(System.in);
-	}
-	
 	public void mainMenu() {
+		
 		exitMenu = false;
 		do {
 			System.out.println(
@@ -34,13 +36,11 @@ public class Account {
 			    + "3. Display Users\n"
 				+ "4. Exit");
 			
-			String input = in.nextLine();
+			String input = Main.in.nextLine();
 			int inputNum = Integer.parseInt(input);
 			loginBranch(inputNum);
 			
 		}while(!exitMenu);
-		
-		
 	}
 	
 	void loginBranch(int option) {
@@ -63,7 +63,7 @@ public class Account {
 	 * sees if username and login are equivalent on the db.
 	 */
 	void accountMenu() {
-		String username = "";
+		username = "";
 		String password = "";
 		
 		System.out.println(
@@ -71,13 +71,13 @@ public class Account {
 			+ "Login"
 			+ "\n-----------------------------------\n");
 		System.out.print("username:");
-		username = in.nextLine();
+		username = Main.in.nextLine();
 		
 		System.out.print("password:");
-		password = in.nextLine();
+		password = Main.in.nextLine();
 		
 		//as long as the user has entered something try to login.
-		if(!username.isBlank() && !password.isBlank() && Database.login(username, password)){
+		if(!username.isBlank() && !password.isBlank() && login(username, password)){
 			System.out.println("SUCCESS");
 			loggedin = true;
 			exitMenu = true;
@@ -87,13 +87,63 @@ public class Account {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param loginUsername
+	 * @param loginPassword
+	 * @return true if found login 
+	 */
+	public static boolean login(String loginUsername, String loginPassword) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			ps = conn.prepareStatement(
+					"SELECT username, master_password \n" +
+					"FROM user u \n" +
+					"WHERE u.username = ? AND u.master_password = ?");
+			ps.setString(1, loginUsername);
+			ps.setString(2, loginPassword);
+			rs = ps.executeQuery();
+			
+			//If we got a match return true!
+			if(rs.next()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(ps != null)
+					ps.close();
+				if(conn != null) 
+					conn.close();
+			} catch (SQLException e) {
+				System.out.println("Problem closing database resources.");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	void displayUserMenu() {
 		System.out.println(
 			  "\n-----------------------------------\n"
 			+ "Users"
 			+ "\n-----------------------------------\n");
 		//grab a list of users
-		List<String> users = Database.getUserList();
+		List<String> users = getUserList();
 		for(String user : users) {
 			System.out.println(user);
 		}
@@ -112,17 +162,17 @@ public class Account {
 			System.out.println("-----Creating new account-----");
 			System.out.println("Please enter your new username.");
 			System.out.print("username:");
-			username = in.nextLine();
+			username = Main.in.nextLine();
 			
 			do {
 				//double check your name
 				System.out.println("Review Username:\n"+username+"\nAre you sure you want to use this name?\ny/n");
-				input = in.nextLine();
+				input = Main.in.nextLine();
 				
 				//Go for it
 				if(input.equalsIgnoreCase("y")) {
 					//Check for duplicate users in the db.
-					if(!Database.duplicateUser(username)) {
+					if(!duplicateUser(username)) {
 						//System.out.println("Success!");
 						break;
 					}
@@ -143,7 +193,7 @@ public class Account {
 				do {
 					System.out.println("Please enter your new password. (can't be blank)");
 					System.out.print("password:");
-					password = in.nextLine();
+					password = Main.in.nextLine();
 					
 					//password passes requirements
 					if(password.length() > 0) {
@@ -158,7 +208,7 @@ public class Account {
 				}while(password.length() < 1);
 				
 				//actually insert into db
-				if(Database.insertNewUser(username, password))
+				if(insertNewUser(username, password))
 				{
 					System.out.println("--New User Account Created!--");
 				}
@@ -183,7 +233,7 @@ public class Account {
 	void exit() {
 		System.out.println("Goodbye!");
 		exitMenu = true;
-		in.close();
+		Main.in.close();
 		Main.exitProgram();
 		//let program exit out to main to close all resources.
 	}
@@ -202,7 +252,137 @@ public class Account {
 	
 	public static void logOut() {
 		loggedin = false;
+		username = "";
 	}
 	
+	/**
+	 * Inserts new user into user table.
+	 * @param username
+	 * @param dbPassword
+	 */
+	public boolean insertNewUser(String username, String newPassword) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			
+			ps = conn.prepareStatement("INSERT INTO `user` VALUES (?, ?)");
+			ps.setString(1, username);
+			ps.setString(2, newPassword);
+
+			if(ps.executeUpdate() > 0)
+				return true;
+			else
+				return false;
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks for duplicate user in the db.
+	 * @param username
+	 * @return true if found user with same name. False if doesn't exist.
+	 */
+	public static boolean duplicateUser(String username) {
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			
+			stmt = conn.prepareStatement("SELECT username FROM user WHERE user.username = ?");
+			stmt.setString(1, username);
+			rs = stmt.executeQuery();
+			
+			//Found the username... return true.
+			if(rs.next())
+				return true;
+			else {
+				return false;
+			}
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * Retrieves all users and returns a list of user names as Strings.
+	 * @return user names
+	 */
+	public static List<String> getUserList(){
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		List<String> users = new ArrayList<String>();
+		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery("SELECT * FROM user");
+		    while(rs.next()) {
+		    	users.add(rs.getString(1));
+		    }
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return users;
+	}
+	
+
+	
+
+	
+
 	
 }
