@@ -87,7 +87,7 @@ public class Main {
 				break;
 			case 2: //NOTES
 				break;
-			case 3: //LOGINS
+			case 3: LoginMenu.mainMenu();
 				break;
 			case 4: ManageAccount.mainMenu();
 				break;

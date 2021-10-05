@@ -1,5 +1,11 @@
 package group10;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -10,10 +16,10 @@ import java.util.List;
 public class LoginMenu {
 	
 	List<Login> logins;
-	boolean exit;
+	static boolean exit;
 	int maxDisplayLogin = 10;
 
-	public void mainMenu() {
+	public static void mainMenu() {
 		exit = false;
 		
 		//load logins
@@ -37,16 +43,55 @@ public class LoginMenu {
 		}while(!exit);
 	}
 	
+
 	/**
 	 * Retrieve logins and store them in a list to help display them easier.
+	 * @return true if able to load logins false if not.
 	 */
-	void marshalLogins() {
+	static boolean marshalLogins() {
 		System.out.println("Loading logins...");
 		
+		ResultSet rs = null;
+		Connection conn = null;
+		PreparedStatement ps = null;
 		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			
+			ps = conn.prepareStatement(
+					  "SELECT login.login_url, login.login_name, login.login_password "
+					+ "FROM login JOIN has_login on has_login.login_name = login.login_name "
+					+ "WHERE has_login.username = ?");
+			ps.setString(1, Account.username);
+			rs = ps.executeQuery();
+			ResultSetMetaData metaData = rs.getMetaData();
+			for(int i=1; i <= metaData.getColumnCount(); i++) {
+				//System.out.print(metaData.getColumnLabel(i) + ", ");
+			}
+			System.out.println();
+			while(rs.next()) {
+				//System.out.printf("%-20.20s %-15.15s %15.15s\n", rs.getString("login_url"), rs.getString("login_name"), rs.getString("login_password"));
+			}
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
 	}
 	
-	void mainMenuBranch(int option) {
+	static void mainMenuBranch(int option) {
 		switch(option) {
 			case 1: 
 				break;
@@ -62,7 +107,7 @@ public class LoginMenu {
 		}
 	}
 	
-	void exit() {
+	static void exit() {
 		exit = true;
 	}
 }
