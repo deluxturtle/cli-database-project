@@ -18,7 +18,7 @@ public class LoginMenu {
 	
 	List<Login> logins;
 	static boolean exit;
-	int maxDisplayLogin = 10;
+	//int maxDisplayLogin = 10;
 
 	public void mainMenu() {
 		exit = false;
@@ -32,7 +32,8 @@ public class LoginMenu {
 			System.out.println(
 				  "\n-----------------------------------\n"
 				+ "Logins"
-				+ "\n-----------------------------------\n");
+				+ "\n-----------------------------------");
+			printLogins();
 			System.out.println(
 				  "1. Create\n"
 				+ "2. Edit\n"
@@ -66,13 +67,7 @@ public class LoginMenu {
 					+ "WHERE has_login.username = ?");
 			ps.setString(1, Account.username);
 			rs = ps.executeQuery();
-			//ResultSetMetaData metaData = rs.getMetaData();
-			//for(int i=1; i <= metaData.getColumnCount(); i++) {
-				//System.out.print(metaData.getColumnLabel(i) + ", ");
-			//}
-			//System.out.println();
 			while(rs.next()) {
-				//System.out.printf("%-20.20s %-15.15s %15.15s\n", rs.getString("login_url"), rs.getString("login_name"), rs.getString("login_password"));
 				Login temp = new Login(rs.getString("login_name"), rs.getString("login_username"), rs.getString("login_password"), rs.getString("login_url"), rs.getString("login_note"));
 				logins.add(temp);
 			}
@@ -95,20 +90,79 @@ public class LoginMenu {
 		return false;
 	}
 	
+	void printLogins() {
+		if(logins.size() > 0) {
+			System.out.printf("#  ) %-20.20s %-15.15s %-15.15s\n", "Website", "UserName", "Password");
+			for(Login login : logins) {
+				System.out.printf("%-3d) %-20.20s %-15.15s %-15.30s\n", logins.indexOf(login), login.getLogin_url(), login.getLogin_username(), login.getLogin_password());
+			}
+		}
+		else {
+			System.out.println("No login records.");
+		}
+		System.out.println();
+	}
+	
 	void mainMenuBranch(int option) {
 		switch(option) {
 			case 1: 
 				break;
 			case 2: 
 				break;
-			case 3: 
+			case 3: deleteLoginMenu();
 				break;
 			case 4: exit();
 				break;
-			//OTHER OPTIONS
 			default : System.out.println("Invalid Option try again...");
 				break;
 		}
+	}
+	
+	void deleteLoginMenu() {
+		System.out.println("Enter what record number you would like to delete:");
+		String input = Main.in.nextLine();
+		int inputNum = Integer.parseInt(input);
+		
+		if(deleteLogin(inputNum)) {
+			System.out.println("Login record deleted.");
+			logins.remove(inputNum);
+			printLogins();
+		}
+		
+
+	}
+	
+	boolean deleteLogin(int loginIndex) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			
+			ps = conn.prepareStatement("DELETE FROM has_login WHERE login_name = ?");
+			ps.setString(1, logins.get(loginIndex).getLogin_name());
+
+			if(ps.executeUpdate() > 0)
+				return true;
+			else
+				return false;
+		    
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
 	}
 	
 	void exit() {
