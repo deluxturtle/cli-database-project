@@ -4,7 +4,11 @@ package group10;
 import java.util.Scanner;
 
 
-
+/**
+ * Welcome to the password manager client application!
+ * @author group10
+ *
+ */
 public class Main {
 	
 	static String configFilePath = "config.properties";
@@ -19,6 +23,8 @@ public class Main {
 		String user = null;
 		String password = null;
 		
+		//
+		//
 		//Get arguments for database connection.
 		if(args.length == 3) {
 			url = args[1];
@@ -42,7 +48,8 @@ public class Main {
 			}
 		}
 		
-		
+		//
+		//
 		//Tests database and continues if able to connect.
 		if(Database.attemptConnection(url, user, password)) {
 			//start doing the command line interface menus
@@ -83,20 +90,23 @@ public class Main {
 	 */
 	static void mainMenuBranch(int option) {
 		switch(option) {
-			case 1: //CARDS
+			case 1: 
+				CardMenu cardMenu = new CardMenu();
+				cardMenu.mainMenu();
 				break;
-			case 2: //NOTES
+			case 2: 
+				NoteMenu noteMenu = new NoteMenu();
+				noteMenu.mainMenu();
 				break;
-			case 3: //LoginMenu.mainMenu();
-				//testing instantiating the menu
+			case 3:
 				LoginMenu loginMenu = new LoginMenu();
 				loginMenu.mainMenu();
 				break;
-			case 4: ManageAccount.mainMenu();
+			case 4: 
+				ManageAccount.mainMenu();
 				break;
 			case 5: Account.logOut();
 				break;
-			//OTHER OPTIONS
 			default : System.out.println("Invalid Option try again...");
 				break;
 		}

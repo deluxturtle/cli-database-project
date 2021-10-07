@@ -153,12 +153,17 @@ public class NoteMenu {
         try {
             conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
 
-            ps = conn.prepareStatement("INSERT INTO secure_note VALUES ('" + ntname + "', '" + nttext + "'");
+            ps = conn.prepareStatement("INSERT INTO secure_note VALUES ( ?, ?)");
+            ps.setString(1, ntname);
+            ps.setString(2, nttext);
 
             if(ps.executeUpdate() == 0)
                 return false;
-
-            ps = conn.prepareStatement("INSERT INTO has_note VALUES ('" + Database.dbUser + "', '" + ntname + "'");
+            
+            ps.close();
+            ps = conn.prepareStatement("INSERT INTO has_note VALUES (?, ?)");
+            ps.setString(1, Account.username);
+            ps.setString(2, ntname);
 
             if(ps.executeUpdate() > 0) {
                 notes.add(new SecureNote(ntname, nttext));

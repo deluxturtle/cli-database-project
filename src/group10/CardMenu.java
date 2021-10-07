@@ -137,7 +137,7 @@ public class CardMenu {
         boolean temp;
         String exdate;
         do {
-            System.out.println("Please insert expiration date in DD/MM/YY format: ");
+            System.out.println("Please insert expiration date in yyyy-mm-dd format: ");
             exdate = Main.in.nextLine();
             temp = validateDate(exdate);
             if (!temp) {
@@ -163,13 +163,16 @@ public class CardMenu {
             conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
 
             ps = conn.prepareStatement("INSERT INTO card VALUES ('" + cname + "', '" + chname + "', " +
-                    cnum + ", '" + ctype + "', " + exdate + ", " + scode + ")");
+                    cnum + ", '" + ctype + "', cast('" + exdate + "' as date), " + scode + ")");
 
             if(ps.executeUpdate() == 0)
                 return false;
-
-            ps = conn.prepareStatement("INSERT INTO has_card VALUES ('" + Database.dbUser + "', '" + cname + "'");
-
+            
+            ps.close();
+            //use the question marks! -aseba
+            ps = conn.prepareStatement("INSERT INTO has_card VALUES ( ?, ?)");
+            ps.setString(1, Account.username);
+            ps.setString(2,  cname);
             if(ps.executeUpdate() > 0) {
                 cards.add(new Card(cname, chname, cnum, ctype, exdate, scode));
                 return true;
@@ -196,7 +199,7 @@ public class CardMenu {
     }
 
     private boolean validateDate(String date) {
-        DateFormat format = new SimpleDateFormat("DD/MM/YY");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         format.setLenient(false);
         try {
             format.parse(date);
