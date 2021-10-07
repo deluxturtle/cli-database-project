@@ -105,7 +105,7 @@ public class LoginMenu {
 	
 	void mainMenuBranch(int option) {
 		switch(option) {
-			case 1: 
+			case 1: createLoginMenu();
 				break;
 			case 2: 
 				break;
@@ -116,6 +116,91 @@ public class LoginMenu {
 			default : System.out.println("Invalid Option try again...");
 				break;
 		}
+	}
+	
+	void createLoginMenu() {
+		
+		System.out.println("Enter your login username:");
+		String username = Main.in.nextLine();
+
+		System.out.println("Enter login password:");
+		String password = Main.in.nextLine();
+		
+		System.out.println("Enter website url:");
+		String website = Main.in.nextLine();
+		
+		System.out.println("Enter note about login:");
+		String note = Main.in.nextLine();
+		
+		System.out.println("Name your login:");
+		String loginName = Main.in.nextLine();
+		
+		Login newLogin = new Login(loginName, username, password, website, note);
+		
+		if(createLogin(newLogin)){
+			logins.add(newLogin);
+			System.out.println("New login recorded!");
+		}
+		else{
+			System.out.println("Error saving login. Please try again later.");
+		}
+
+
+		
+		
+	}
+
+	/**
+	 * Sends over the login to the database using SQL.
+	 * @param login
+	 * @return
+	 */
+	boolean createLogin(Login login){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try{
+			conn = DriverManager.getConnection(Database.dbUrl,Database.dbUser, Database.dbPassword);
+			ps = conn.prepareStatement("INSERT INTO login VALUES ( ?, ?, ?, ?, ?)");
+			ps.setString(1, login.getLogin_name());
+			ps.setString(2, login.getLogin_username());
+			ps.setString(3, login.getLogin_password());
+			ps.setString(4, login.getLogin_url());
+			ps.setString(5, login.getLogin_note());
+
+			if(ps.executeUpdate() > 0){
+				ps.close();
+				//almost forgot to add it to the has_login table
+				ps = conn.prepareStatement("INSERT INTO has_login VALUES ( ?, ?)");
+				ps.setString(1, Account.username);
+				ps.setString(2, login.getLogin_name());
+
+				if(ps.executeUpdate() > 0){
+					return true;
+				}
+				else{
+					return false;
+				}
+				
+			}
+			else{
+				return false;
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 	
 	void deleteLoginMenu() {
@@ -142,8 +227,18 @@ public class LoginMenu {
 			ps = conn.prepareStatement("DELETE FROM has_login WHERE login_name = ?");
 			ps.setString(1, logins.get(loginIndex).getLogin_name());
 
-			if(ps.executeUpdate() > 0)
-				return true;
+			if(ps.executeUpdate() > 0){
+				ps.close();
+				//delete from actual login table as well.
+				ps = conn.prepareStatement("DELETE FROM login WHERE login_name = ?");
+				ps.setString(1, logins.get(loginIndex).getLogin_name());
+				if(ps.executeUpdate() > 0){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
 			else
 				return false;
 		    
