@@ -9,12 +9,13 @@ import java.util.Date;
 public class Card {
     private String card_name;
     private String cardholder_name;
+    private String card_number;
     private String card_type;
-    private Date expiration_date;
+    private String expiration_date;
     private String security_code;
 
-   public Card(String card_name, String cardholder_name, String card_type,
-               Date expiration_date, String security_code){
+    public Card(String card_name, String cardholder_name, String card_number, String card_type,
+                String expiration_date, String security_code){
         this.card_name = card_name;
         this.cardholder_name = cardholder_name;
         this.card_type = card_type;
@@ -38,11 +39,15 @@ public class Card {
         this.card_type = card_type;
     }
 
-    public Date getExpiration_date() {
+    public String getCard_number() { return card_number; }
+
+    public void setCard_number(String card_number) { this.card_number = card_number; }
+
+    public String getExpiration_date() {
         return expiration_date;
     }
 
-    public void setExpiration_date(Date expiration_date) {
+    public void setExpiration_date(String expiration_date) {
         this.expiration_date = expiration_date;
     }
 
