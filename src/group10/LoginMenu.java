@@ -227,8 +227,18 @@ public class LoginMenu {
 			ps = conn.prepareStatement("DELETE FROM has_login WHERE login_name = ?");
 			ps.setString(1, logins.get(loginIndex).getLogin_name());
 
-			if(ps.executeUpdate() > 0)
-				return true;
+			if(ps.executeUpdate() > 0){
+				ps.close();
+				//delete from actual login table as well.
+				ps = conn.prepareStatement("DELETE FROM login WHERE login_name = ?");
+				ps.setString(1, logins.get(loginIndex).getLogin_name());
+				if(ps.executeUpdate() > 0){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
 			else
 				return false;
 		    
