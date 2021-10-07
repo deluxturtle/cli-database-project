@@ -105,7 +105,7 @@ public class LoginMenu {
 	
 	void mainMenuBranch(int option) {
 		switch(option) {
-			case 1: 
+			case 1: createLoginMenu();
 				break;
 			case 2: 
 				break;
@@ -115,6 +115,51 @@ public class LoginMenu {
 				break;
 			default : System.out.println("Invalid Option try again...");
 				break;
+		}
+	}
+	
+	void createLoginMenu() {
+		
+		
+
+		System.out.println("Enter your login username:");
+		String username = Main.in.nextLine();
+
+		System.out.println("Enter login password:");
+		String password = Main.in.nextLine();
+		
+		System.out.println("Enter website url:");
+		String website = Main.in.nextLine();
+		
+		System.out.println("Enter note about login:");
+		String note = Main.in.nextLine();
+		
+		System.out.println("Name your login:");
+		String loginName = Main.in.nextLine();
+		
+		Login newLogin = new Login(loginName, username, password, website, note);
+		
+		if(createLogin(newLogin)){
+			logins.add(newLogin);
+			System.out.println("New login recorded!");
+		}
+
+
+		
+		
+	}
+
+	boolean createLogin(Login login){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try{
+			conn = DriverManager.getConnection(Database.dbUrl,Database.dbUser, Database.dbPassword);
+			ps = conn.prepareStatement("INSERT INTO login VALUES ( ?, ?, ?, ?, ?)");
+			ps.setString(1, login.getLogin_name());
+			ps.setString(2, login.getLogin_username());
+			ps.setString(3, login.getLogin_password());
+			ps.setString(4, login.getLogin_url());
+			ps.setString(5, login.getLogin_note());
 		}
 	}
 	
