@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.DefaultStyledDocument.ElementSpec;
+
 /**
  * Menu to add/delete/edit/show logins.
  * @author aseba
@@ -107,7 +109,7 @@ public class LoginMenu {
 		switch(option) {
 			case 1: createLoginMenu();
 				break;
-			case 2: 
+			case 2: editLoginMenu();
 				break;
 			case 3: deleteLoginMenu();
 				break;
@@ -117,7 +119,123 @@ public class LoginMenu {
 				break;
 		}
 	}
+
+	/**
+	 * Sets up editing a login. Asks for which login to edit then what part and then you can just change it to what you want.
+	 */
+	void editLoginMenu(){
+
+		System.out.println("Enter what number login you would like to edit.");
+		String input = Main.in.nextLine();
+		int inputNum = Integer.parseInt(input);
+
+		if(inputNum >= 0 && inputNum < logins.size()){
+			Login login = logins.get(inputNum);
+			System.out.println("1. Login Name:     " + login.getLogin_name());
+			System.out.println("2. Login username: " + login.getLogin_username());
+			System.out.println("3. Login password: " + login.getLogin_password());
+			System.out.println("4. Login url:      " + login.getLogin_url());
+			System.out.println("5. Login note:     " + login.getLogin_note());
+			System.out.println("Enter # of choice.");
+			input = Main.in.nextLine();
+			inputNum = Integer.parseInt(input);
+			String chosen_att = getLoginAttribute(inputNum);
+			if(!chosen_att.isBlank()){
+
+				System.out.println("Type your new " + chosen_att + ":");
+				String value = Main.in.nextLine();
+				if(editLogin(login, chosen_att, value)){
+					//update local login
+					updateLocalLogin(login, inputNum, value);
+					System.out.println("Login succesfully updated!");
+				}
+				else{
+					System.out.println("Problem updating login. Try again later.");
+				}
+
+			}
+			else{
+				System.out.println("Please enter valid attribute. Returning to previous menu.");
+			}
+		}
+		else{
+			System.out.println("Please enter a valid login #");
+		}
+	}
+
+	/**
+	 * Getes the string attribute for editing the db directly.
+	 * @param input
+	 * @return
+	 */
+	String getLoginAttribute(int input){
+		switch(input){
+			case 1: return "login_name";
+			case 2: return "login_username";
+			case 3: return "login_password";
+			case 4: return "login_url";
+			case 5: return "login_note";
+			default: return "";
+		}
+	}
+
+	boolean editLogin(Login login, String attribute, String value){
+		//building SQL statement.
+		String change = "login." + attribute + " = \'" + value + "\'";
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try{
+			conn = DriverManager.getConnection(Database.dbUrl, Database.dbUser, Database.dbPassword);
+			String sql = "UPDATE login SET " + change + " WHERE login_name = ?";
+			ps = conn.prepareStatement(sql);
+			// ps.setString(1, change);
+			ps.setString(1, login.getLogin_name());
+
+			if(ps.executeUpdate() > 0){
+				return true;
+			}
+			else{
+				return false;
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+			
+		}
+		return false;
+	}
+
+	/**
+	 * Updates local login so we don't have to query the database again just to retrieve what we 
+	 * know has been updated. and save on bandwidth.
+	 * @param login
+	 * @param input
+	 * @param value
+	 */
+	void updateLocalLogin(Login login, int input, String value){
+		switch(input){
+			case 1: login.setLogin_name(value);
+			case 2: login.setLogin_username(value);
+			case 3: login.setLogin_password(value);
+			case 4: login.setLogin_url(value);
+			case 5: login.setLogin_note(value);
+		}
+	}
 	
+	/**
+	 * Asks for login information you want to add to the database.
+	 */
 	void createLoginMenu() {
 		
 		System.out.println("Enter your login username:");
@@ -203,20 +321,31 @@ public class LoginMenu {
 		return false;
 	}
 	
+	/**
+	 * Sets-up deleting login record.
+	 */
 	void deleteLoginMenu() {
 		System.out.println("Enter what record number you would like to delete:");
 		String input = Main.in.nextLine();
 		int inputNum = Integer.parseInt(input);
 		
-		if(deleteLogin(inputNum)) {
+		if(inputNum > 0 && inputNum < logins.size() && deleteLogin(inputNum)) {
 			System.out.println("Login record deleted.");
 			logins.remove(inputNum);
 			printLogins();
+		}
+		else{
+			System.out.println("Please enter a valid login #");
 		}
 		
 
 	}
 	
+	/**
+	 * Deletes login from login and has_login table on the database.
+	 * @param loginIndex
+	 * @return
+	 */
 	boolean deleteLogin(int loginIndex) {
 		Connection conn = null;
 		PreparedStatement ps = null;
