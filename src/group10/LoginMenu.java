@@ -120,8 +120,6 @@ public class LoginMenu {
 	
 	void createLoginMenu() {
 		
-		
-
 		System.out.println("Enter your login username:");
 		String username = Main.in.nextLine();
 
@@ -143,12 +141,20 @@ public class LoginMenu {
 			logins.add(newLogin);
 			System.out.println("New login recorded!");
 		}
+		else{
+			System.out.println("Error saving login. Please try again later.");
+		}
 
 
 		
 		
 	}
 
+	/**
+	 * Sends over the login to the database using SQL.
+	 * @param login
+	 * @return
+	 */
 	boolean createLogin(Login login){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -160,7 +166,41 @@ public class LoginMenu {
 			ps.setString(3, login.getLogin_password());
 			ps.setString(4, login.getLogin_url());
 			ps.setString(5, login.getLogin_note());
+
+			if(ps.executeUpdate() > 0){
+				ps.close();
+				//almost forgot to add it to the has_login table
+				ps = conn.prepareStatement("INSERT INTO has_login VALUES ( ?, ?)");
+				ps.setString(1, Account.username);
+				ps.setString(2, login.getLogin_name());
+
+				if(ps.executeUpdate() > 0){
+					return true;
+				}
+				else{
+					return false;
+				}
+				
+			}
+			else{
+				return false;
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
 		}
+		finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(conn != null)
+					conn.close();
+			}
+			catch(SQLException se) {
+				se.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 	
 	void deleteLoginMenu() {
